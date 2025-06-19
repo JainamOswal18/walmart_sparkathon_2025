@@ -11,7 +11,7 @@
 - **Automatic Activation:**
   - Content script is injected automatically on Walmart and Instacart domains.
 - **Voice Input:**
-  - Simple popup with a button to start/stop listening for voice commands.
+  - Modern popup with a button to start/stop listening for voice commands.
   - Uses the user's microphone to record audio.
 - **AI Service Integration (Placeholder):**
   - Sends recorded audio to a placeholder AI service endpoint.
@@ -20,19 +20,43 @@
   - Executes basic actions (e.g., search, add to cart) using placeholder selectors.
 - **Voice Output:**
   - Plays back the assistant's audio reply from a provided URL.
+- **Futuristic UI/UX:**
+  - Popup features a dark glassmorphism card, neon purple and blue accents, soft glow effects, and smooth state animations for a high-tech, professional look.
+
+---
+
+## Modern Popup UI/UX Design
+
+- **Color Palette:**
+  - Dark gradient background (`#0D0D19` to `#121223`)
+  - Neon purple (`#7E3CFB`) and soft blue (`#5C73E6`) accents
+  - Light gray/white text (`#E0E0E0`)
+  - Glassmorphism card with blur and transparency
+- **Design Features:**
+  - Neon glow and animated button for voice input
+  - Animated status text for listening, processing, and error states
+  - Minimalist, readable layout with generous spacing
+  - Subtle transitions and hover effects for all interactive elements
+- **Implementation:**
+  - All popup UI styles are in `extension/popup.css`.
+  - State changes (listening, processing, error, idle) are reflected visually via CSS classes managed in `extension/popup.js`.
 
 ---
 
 ## File Structure
 
 ```
-manifest.json         # Chrome extension manifest (Manifest V3)
-popup.html            # Popup UI with voice button
-popup.js              # Handles popup logic and messaging
-background.js         # Handles API calls to the AI service
-content.js            # Injected into grocery sites, handles voice, AI, and DOM actions
-README.md             # This documentation
-icon16.png, icon48.png, icon128.png  # (Optional) Extension icons
+extension/
+  ├── manifest.json         # Chrome extension manifest (Manifest V3)
+  ├── popup.html            # Popup UI (modern, glassmorphism design)
+  ├── popup.js              # Handles popup logic, state, and messaging
+  ├── popup.css             # All popup UI/UX styles (futuristic, animated)
+  ├── background.js         # Handles API calls to the AI service
+  ├── content.js            # Injected into grocery sites, handles voice, AI, and DOM actions
+  ├── icon16.png            # Extension icon (16x16)
+  ├── icon48.png            # Extension icon (48x48)
+  ├── icon128.png           # Extension icon (128x128)
+README.md                   # This documentation
 ```
 
 ---
@@ -40,21 +64,22 @@ icon16.png, icon48.png, icon128.png  # (Optional) Extension icons
 ## Setup & Installation
 
 1. **Clone or Download the Repository**
-   - Place all files in a single directory.
+   - Place all files in a single directory, preserving the `extension/` folder structure.
 
-2. **(Optional) Add Icons**
-   - For best results, add `icon16.png`, `icon48.png`, and `icon128.png` to the root directory. These are referenced in `manifest.json`.
+2. **(Optional) Add/Replace Icons**
+   - For best results, use your own `icon16.png`, `icon48.png`, and `icon128.png` in the `extension/` directory. These are referenced in `manifest.json`.
 
 3. **Load the Extension in Chrome**
    1. Open Chrome and go to `chrome://extensions/`.
    2. Enable **Developer mode** (toggle in the top right).
-   3. Click **Load unpacked** and select the extension's directory.
+   3. Click **Load unpacked** and select the `extension/` directory.
    4. The "Smart Grocery Assistant" extension should now appear in your extensions list.
 
 4. **Usage**
    - Navigate to [walmart.com](https://www.walmart.com) or [instacart.com](https://www.instacart.com).
    - Click the extension icon and use the popup to start/stop voice listening.
    - The extension will record your voice, send it to the placeholder AI service, and attempt to perform actions on the page based on the AI's response.
+   - The popup UI will visually indicate listening, processing, and error states with animated effects.
 
 ---
 
@@ -70,6 +95,8 @@ icon16.png, icon48.png, icon128.png  # (Optional) Extension icons
   - This MVP only demonstrates the communication flow. The AI service must be implemented separately.
 - **No Advanced Error Handling:**
   - The code is intentionally simple for MVP purposes.
+- **UI/UX Customization:**
+  - All popup UI styles are in `popup.css`. You can further customize colors, animations, and layout there.
 
 ---
 
