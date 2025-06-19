@@ -1,0 +1,170 @@
+/*
+  popup.css - Modern, Futuristic, Glassmorphism UI for Smart Grocery Assistant
+  -------------------------------------------------------------
+  Color Palette:
+    Background: #0D0D19 to #121223 (gradient)
+    Primary Accent: #7E3CFB (neon purple)
+    Secondary Accent: #5C73E6 (soft blue)
+    Text: #E0E0E0
+    Card: rgba(26, 26, 46, 0.8)
+    Border: rgba(42, 42, 62, 0.5)
+*/
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-width: 280px;
+    min-height: 260px;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    color: #E0E0E0;
+    background: linear-gradient(180deg, #0D0D19 0%, #121223 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Glassmorphism Card */
+.popup-card {
+    background: rgba(26, 26, 46, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 4px 32px 0 rgba(126, 60, 251, 0.15), 0 1.5px 8px 0 rgba(92, 115, 230, 0.10);
+    border: 1.5px solid rgba(42, 42, 62, 0.5);
+    backdrop-filter: blur(12px);
+    padding: 28px 24px 18px 24px;
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.3s;
+}
+
+/* Header */
+.popup-header {
+    width: 100%;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.popup-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #E0E0E0;
+    text-shadow: 0 0 8px #7E3CFB88, 0 0 2px #5C73E6;
+    margin: 0;
+}
+
+/* Main Section */
+.popup-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+/* Voice Button with Neon Glow */
+.voice-btn {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #E0E0E0;
+    background: linear-gradient(90deg, #7E3CFB 60%, #5C73E6 100%);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 0 12px 2px #7E3CFB88, 0 0 2px #5C73E6;
+    cursor: pointer;
+    outline: none;
+    transition: box-shadow 0.25s, background 0.25s, transform 0.18s;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+}
+
+.voice-btn:hover,
+.voice-btn:focus {
+    box-shadow: 0 0 18px 4px #7E3CFBcc, 0 0 6px #5C73E6;
+    background: linear-gradient(90deg, #7E3CFB 80%, #5C73E6 100%);
+    transform: translateY(-2px) scale(1.03);
+}
+
+.voice-btn.listening {
+    /* Animate button when listening */
+    animation: pulse-glow 1.2s infinite alternate;
+    background: linear-gradient(90deg, #5C73E6 0%, #7E3CFB 100%);
+}
+
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 16px 4px #7E3CFBcc, 0 0 8px #5C73E6;
+    }
+
+    100% {
+        box-shadow: 0 0 32px 8px #7E3CFBcc, 0 0 16px #5C73E6;
+    }
+}
+
+/* Status Text with Subtle Animation */
+.status-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #E0E0E0;
+    letter-spacing: 0.01em;
+    text-align: center;
+    min-height: 24px;
+    transition: color 0.25s, opacity 0.25s, transform 0.25s;
+    opacity: 0.92;
+}
+
+.status-text.listening {
+    color: #7E3CFB;
+    text-shadow: 0 0 8px #7E3CFB88, 0 0 2px #5C73E6;
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.status-text.processing {
+    color: #5C73E6;
+    text-shadow: 0 0 6px #5C73E6;
+    opacity: 1;
+    transform: scale(1.04);
+}
+
+.status-text.error {
+    color: #FF4B6E;
+    text-shadow: 0 0 6px #FF4B6E44;
+    opacity: 1;
+    transform: scale(1.04);
+}
+
+/* Footer */
+.popup-footer {
+    width: 100%;
+    margin-top: 18px;
+    text-align: center;
+    opacity: 0.7;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    color: #E0E0E0;
+    border-top: 1px solid rgba(42, 42, 62, 0.25);
+    padding-top: 8px;
+}
+
+/* Divider (if needed) */
+.divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(42, 42, 62, 0.5);
+    margin: 16px 0;
+    border-radius: 1px;
+}
