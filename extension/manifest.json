@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Grocery Assistant",
+  "version": "0.1.0",
+  "description": "Control online grocery shopping with voice commands.",
+  "permissions": ["scripting", "activeTab", "storage"],
+  "host_permissions": ["*://*.walmart.com/*", "*://*.instacart.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Smart Grocery Assistant"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.walmart.com/*", "*://*.instacart.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icon16.png", "icon48.png", "icon128.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
