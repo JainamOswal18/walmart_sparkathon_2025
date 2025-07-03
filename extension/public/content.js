@@ -107,4 +107,4 @@ function handleAIResponse(data) {
 function playAudioResponse(url) {
   const audio = new Audio(url);
   audio.play();
-}
+} 
