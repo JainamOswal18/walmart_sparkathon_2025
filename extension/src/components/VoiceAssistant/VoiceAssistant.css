@@ -3,167 +3,176 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff;
-  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
-.voice-assistant-header {
+/* Connection form styles */
+.connect-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  height: 100%;
+}
+
+.connect-form h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.connect-form form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+}
+
+.connect-form input {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.connect-form button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.connect-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.connect-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* Connected assistant styles */
+.assistant-connected {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.assistant-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.voice-assistant-header h2 {
+.assistant-header h3 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  letter-spacing: 0.5px;
 }
 
-.close-button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.5rem;
+.disconnect-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: var(--text-color);
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.close-button:hover {
-  opacity: 1;
+.disconnect-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.voice-assistant-content {
+/* Visualizer container */
+.visualizer-container {
+  height: 80px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Control section */
+.control-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  padding: 15px;
   overflow: hidden;
 }
 
-.visualizer-container {
-  width: 100%;
-  height: 80px;
-  margin-bottom: 15px;
-}
-
-.control-section {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 15px;
-}
-
+/* Conversation */
 .conversation {
   flex: 1;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
+  padding: 10px 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
+}
+
+.no-messages {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  margin: 20px 0;
 }
 
 .message {
-  padding: 8px 12px;
+  padding: 10px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  max-width: 100%;
-  word-break: break-word;
-}
-
-.message-assistant {
-  color: #4caf50;
+  max-width: 90%;
+  word-wrap: break-word;
 }
 
 .message-user {
-  color: #2196f3;
+  align-self: flex-end;
+  background: rgba(33, 150, 243, 0.2);
+  border: 1px solid rgba(33, 150, 243, 0.3);
 }
 
-.message-text {
-  color: #fff;
+.message-agent {
+  align-self: flex-start;
+  background: rgba(106, 17, 203, 0.2);
+  border: 1px solid rgba(106, 17, 203, 0.3);
 }
 
-.voice-assistant-loading,
-.voice-assistant-error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px;
-  text-align: center;
+.message strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
+.message-user strong {
+  color: rgba(33, 150, 243, 0.9);
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.voice-assistant-error button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.voice-assistant-error button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* LiveKit Components Overrides */
-:root {
-  --lk-control-bar-bg: rgba(255, 255, 255, 0.1);
-  --lk-button-bg: rgba(255, 255, 255, 0.2);
-  --lk-button-bg-hover: rgba(255, 255, 255, 0.3);
-  --lk-button-active-bg: rgba(255, 255, 255, 0.4);
-}
-
-.lk-voice-assistant-control-bar {
-  background: var(--lk-control-bar-bg);
-  border-radius: 10px;
-  padding: 8px;
-}
-
-.lk-button {
-  color: #fff;
-  background: var(--lk-button-bg);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.lk-button:hover {
-  background: var(--lk-button-bg-hover);
-}
-
-.lk-button.lk-active {
-  background: var(--lk-button-active-bg);
+.message-agent strong {
+  color: rgba(106, 17, 203, 0.9);
 } 

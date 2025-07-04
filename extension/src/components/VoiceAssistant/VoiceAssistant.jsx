@@ -1,31 +1,154 @@
-import { useState, useEffect } from 'react';
-import { 
-  useVoiceAssistant, 
-  BarVisualizer, 
-  VoiceAssistantControlBar,
-  useTrackTranscription,
-  useLocalParticipant,
-  LiveKitRoom,
-  RoomAudioRenderer
-} from '@livekit/components-react';
+import { useState, useEffect, useCallback } from 'react';
+import { LiveKitRoom, RoomAudioRenderer, useVoiceAssistant, BarVisualizer, VoiceAssistantControlBar, useTrackTranscription, useLocalParticipant } from '@livekit/components-react';
 import { Track } from 'livekit-client';
 import '@livekit/components-styles';
+import LiveKitService from '../../services/LiveKitService';
+import TokenService from '../../services/TokenService';
 import './VoiceAssistant.css';
-import livekitService from '../../services/LiveKitService';
 
-// Message component for displaying transcriptions
+// Message component to display transcribed messages
 const Message = ({ type, text }) => {
   return (
-    <div className="message">
-      <strong className={`message-${type}`}>
-        {type === "assistant" ? "Assistant: " : "You: "}
-      </strong>
-      <span className="message-text">{text}</span>
+    <div className={`message message-${type}`}>
+      <strong>{type === 'agent' ? 'Assistant: ' : 'You: '}</strong>
+      <span>{text}</span>
     </div>
   );
 };
 
-const VoiceAssistantContent = () => {
+// Conversation component that displays transcribed messages
+const Conversation = ({ agentTranscriptions, userTranscriptions }) => {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const allMessages = [
+      ...(agentTranscriptions?.map((t) => ({ ...t, type: 'agent' })) ?? []),
+      ...(userTranscriptions?.map((t) => ({ ...t, type: 'user' })) ?? []),
+    ].sort((a, b) => a.firstReceivedTime - b.firstReceivedTime);
+    
+    setMessages(allMessages);
+  }, [agentTranscriptions, userTranscriptions]);
+
+  return (
+    <div className="conversation">
+      {messages.length === 0 ? (
+        <p className="no-messages">Your conversation will appear here...</p>
+      ) : (
+        messages.map((msg, index) => (
+          <Message key={msg.id || index} type={msg.type} text={msg.text} />
+        ))
+      )}
+    </div>
+  );
+};
+
+// The main VoiceAssistant component
+const VoiceAssistant = () => {
+  const [token, setToken] = useState(null);
+  const [connecting, setConnecting] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [error, setError] = useState(null);
+  const [username, setUsername] = useState('');
+  const [showForm, setShowForm] = useState(true);
+
+  // Handle LiveKit status changes
+  useEffect(() => {
+    const unsubscribe = LiveKitService.onStatusChange((status, data) => {
+      if (status === 'connected') {
+        setConnected(true);
+        setConnecting(false);
+      } else if (status === 'disconnected') {
+        setConnected(false);
+        setConnecting(false);
+      } else if (status === 'connecting') {
+        setConnecting(true);
+      } else if (status === 'error') {
+        setConnecting(false);
+        setError(data?.message || 'Connection error');
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // Function to handle form submission and connect to LiveKit
+  const handleConnect = useCallback(async (e) => {
+    e.preventDefault();
+    
+    if (!username.trim()) return;
+    
+    setConnecting(true);
+    setError(null);
+    
+    try {
+      // Get token from backend
+      const newToken = await TokenService.getToken(username);
+      setToken(newToken);
+      setShowForm(false);
+      
+      // Connect to LiveKit
+      await LiveKitService.connect(newToken);
+    } catch (err) {
+      setError(err.message || 'Failed to connect');
+      setConnecting(false);
+    }
+  }, [username]);
+
+  // Function to disconnect from LiveKit
+  const handleDisconnect = useCallback(async () => {
+    try {
+      await LiveKitService.disconnect();
+      setShowForm(true);
+      setToken(null);
+    } catch (err) {
+      console.error('Error disconnecting:', err);
+    }
+  }, []);
+
+  // Handle audio start when required (browser restrictions)
+  const handleStartAudio = useCallback(() => {
+    LiveKitService.startAudio();
+  }, []);
+
+  // Render main component
+  return (
+    <div className="voice-assistant-container">
+      {showForm ? (
+        <div className="connect-form">
+          <h2>Smart Grocery Assistant</h2>
+          <form onSubmit={handleConnect}>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your name"
+              required
+            />
+            <button type="submit" disabled={connecting}>
+              {connecting ? 'Connecting...' : 'Connect to Assistant'}
+            </button>
+            {error && <p className="error-message">{error}</p>}
+          </form>
+        </div>
+      ) : token ? (
+        <LiveKitRoom
+          token={token}
+          serverUrl={LiveKitService.LIVEKIT_URL}
+          connect={true}
+          audio={true}
+          video={false}
+          onDisconnected={handleDisconnect}
+        >
+          <RoomAudioRenderer />
+          <VoiceAssistantView onStartAudio={handleStartAudio} onDisconnect={handleDisconnect} />
+        </LiveKitRoom>
+      ) : null}
+    </div>
+  );
+};
+
+// The inner view component when connected to LiveKit
+const VoiceAssistantView = ({ onStartAudio, onDisconnect }) => {
   const { state, audioTrack, agentTranscriptions } = useVoiceAssistant();
   const localParticipant = useLocalParticipant();
   const { segments: userTranscriptions } = useTrackTranscription({
@@ -34,141 +157,27 @@ const VoiceAssistantContent = () => {
     participant: localParticipant.localParticipant,
   });
 
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    console.log("VoiceAssistant state:", state);
-    console.log("Agent transcriptions:", agentTranscriptions);
-    console.log("User transcriptions:", userTranscriptions);
-    
-    const allMessages = [
-      ...(agentTranscriptions?.map((t) => ({ ...t, type: "assistant" })) ?? []),
-      ...(userTranscriptions?.map((t) => ({ ...t, type: "user" })) ?? []),
-    ].sort((a, b) => a.firstReceivedTime - b.firstReceivedTime);
-    setMessages(allMessages);
-  }, [agentTranscriptions, userTranscriptions, state]);
-
+  // Render the voice assistant UI when connected
   return (
-    <div className="voice-assistant-content">
+    <div className="assistant-connected">
+      <div className="assistant-header">
+        <h3>Smart Grocery Assistant</h3>
+        <button className="disconnect-btn" onClick={onDisconnect}>
+          Disconnect
+        </button>
+      </div>
+      
       <div className="visualizer-container">
         <BarVisualizer state={state} barCount={7} trackRef={audioTrack} />
       </div>
-      <div className="control-section">
-        <VoiceAssistantControlBar />
-        <div className="conversation">
-          {messages.map((msg, index) => (
-            <Message key={msg.id || index} type={msg.type} text={msg.text} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const VoiceAssistant = ({ onClose }) => {
-  const [isConnecting, setIsConnecting] = useState(true);
-  const [token, setToken] = useState(null);
-  const [error, setError] = useState(null);
-  const [serverUrl, setServerUrl] = useState(process.env.LIVEKIT_URL || 'wss://demo.livekit.cloud');
-  const [roomName, setRoomName] = useState(process.env.LIVEKIT_ROOM_NAME || 'grocery-assistant');
-  const [connectionAttempted, setConnectionAttempted] = useState(false);
-
-  useEffect(() => {
-    const connectToLiveKit = async () => {
-      try {
-        setIsConnecting(true);
-        
-        // Generate a token for your LiveKit server (ai-grocery-shopper-6zlhdx27.livekit.cloud)
-        // This token is manually generated for the specific server and room
-        // Identity: grocery-user-[timestamp]
-        // Room: grocery-assistant
-        // Permissions: can publish/subscribe audio
-        
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTIwOTA1MDgsImlzcyI6IkFQSVAxaXVJUWw0ZUZRSkoiLCJuYmYiOjE3MjA1NTQxMDgsInN1YiI6Imdyb2Nlcnktdm9pY2UtdXNlci0xMjM0NTYiLCJ2aWRlbyI6eyJjYW5QdWJsaXNoIjp0cnVlLCJjYW5QdWJsaXNoRGF0YSI6dHJ1ZSwiY2FuU3Vic2NyaWJlIjp0cnVlLCJyb29tIjoiZ3JvY2VyeS1hc3Npc3RhbnQiLCJyb29tSm9pbiI6dHJ1ZX19.u25hGJU77xZDxo8jRK1JMPpWQQxfARENRVQUFFTECQU";
-        
-        console.log("Connecting to LiveKit server:", serverUrl);
-        console.log("Room name:", roomName);
-        
-        setToken(token);
-        setConnectionAttempted(true);
-      } catch (error) {
-        console.error('Error connecting to LiveKit:', error);
-        setError('Failed to connect to voice assistant. Please try again.');
-      } finally {
-        setIsConnecting(false);
-      }
-    };
-
-    connectToLiveKit();
-
-    return () => {
-      // Disconnect when component unmounts
-      console.log("Unmounting VoiceAssistant, disconnecting from LiveKit");
-      livekitService.disconnect();
-    };
-  }, [serverUrl, roomName]);
-
-  const handleRoomDisconnected = () => {
-    console.log("Room disconnected");
-    // Don't immediately close, give user a chance to see what happened
-  };
-
-  const handleRoomError = (error) => {
-    console.error("Room error:", error);
-    setError(`Connection error: ${error.message || 'Unknown error'}`);
-  };
-
-  if (isConnecting) {
-    return (
-      <div className="voice-assistant-container">
-        <div className="voice-assistant-loading">
-          <div className="loading-spinner"></div>
-          <p>Connecting to voice assistant...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="voice-assistant-container">
-        <div className="voice-assistant-error">
-          <p>{error}</p>
-          <button onClick={onClose}>Close</button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="voice-assistant-container">
-      <div className="voice-assistant-header">
-        <h2>Smart Grocery Assistant</h2>
-        <button className="close-button" onClick={onClose}>×</button>
-      </div>
       
-      {token && connectionAttempted ? (
-        <LiveKitRoom
-          serverUrl={serverUrl}
-          token={token}
-          connect={true}
-          video={false}
-          audio={true}
-          onDisconnected={handleRoomDisconnected}
-          onError={handleRoomError}
-          // Add debug data
-          data-room-name={roomName}
-          data-connection-attempted={connectionAttempted.toString()}
-        >
-          <RoomAudioRenderer />
-          <VoiceAssistantContent />
-        </LiveKitRoom>
-      ) : (
-        <div className="voice-assistant-error">
-          <p>Failed to initialize connection. Please try again.</p>
-          <button onClick={onClose}>Close</button>
-        </div>
-      )}
+      <div className="control-section">
+        <VoiceAssistantControlBar onStartAudio={onStartAudio} />
+        <Conversation 
+          agentTranscriptions={agentTranscriptions} 
+          userTranscriptions={userTranscriptions} 
+        />
+      </div>
     </div>
   );
 };

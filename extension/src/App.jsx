@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
+import VoiceAssistant from './components/VoiceAssistant/VoiceAssistant'
 import './App.css'
-import VoiceAssistant from './components/VoiceAssistant'
 
 function App() {
   const [status, setStatus] = useState('idle');
@@ -36,11 +36,31 @@ function App() {
 
   const toggleListening = async () => {
     if (showVoiceAssistant) {
-      setShowVoiceAssistant(false);
+      // If Voice Assistant is open, don't use the simple mic
       return;
     }
     
-    setShowVoiceAssistant(true);
+    const newListeningState = !listening;
+    setListening(newListeningState);
+    setStatus(newListeningState ? 'listening' : 'idle');
+
+    try {
+      // Send message to content script in active tab
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      
+      if (tab && tab.id) {
+        chrome.tabs.sendMessage(tab.id, {
+          action: newListeningState ? "START_LISTENING" : "STOP_LISTENING",
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling listening state:", error);
+      setStatus('error');
+      setListening(false);
+    }
   };
 
   const getStatusText = () => {
@@ -60,34 +80,49 @@ function App() {
     return listening ? '🛑 Stop Listening' : '🎤 Start Listening';
   };
 
+  const toggleVoiceAssistant = () => {
+    // If currently using basic mic, stop it
+    if (listening) {
+      toggleListening();
+    }
+    
+    setShowVoiceAssistant(!showVoiceAssistant);
+  };
+
   return (
     <div className="popup-card">
-      <header className="popup-header">
-        <h1 className="popup-title">Smart Grocery Assistant</h1>
-      </header>
-      <main className="popup-main">
-        <button 
-          id="voice-btn" 
-          className={`voice-btn ${listening ? 'listening' : ''}`}
-          onClick={toggleListening}
-        >
-          {getButtonText()}
-        </button>
-        <span 
-          id="status" 
-          className={`status-text ${status}`}
-        >
-          {getStatusText()}
-        </span>
-      </main>
-      <footer className="popup-footer">
-        <small>Powered by AI</small>
-      </footer>
-      
-      {showVoiceAssistant && (
-        <div className="voice-assistant-overlay">
-          <VoiceAssistant onClose={() => setShowVoiceAssistant(false)} />
-        </div>
+      {showVoiceAssistant ? (
+        <VoiceAssistant />
+      ) : (
+        <>
+          <header className="popup-header">
+            <h1 className="popup-title">Smart Grocery Assistant</h1>
+          </header>
+          <main className="popup-main">
+            <button 
+              id="voice-btn" 
+              className={`voice-btn ${listening ? 'listening' : ''}`}
+              onClick={toggleListening}
+            >
+              {getButtonText()}
+            </button>
+            <span 
+              id="status" 
+              className={`status-text ${status}`}
+            >
+              {getStatusText()}
+            </span>
+            <button 
+              className="advanced-mode-btn"
+              onClick={toggleVoiceAssistant}
+            >
+              Advanced Assistant
+            </button>
+          </main>
+          <footer className="popup-footer">
+            <small>Powered by AI</small>
+          </footer>
+        </>
       )}
     </div>
   )

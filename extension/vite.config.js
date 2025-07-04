@@ -5,24 +5,32 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: "dist",
+    outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        index: "index.html",
+        index: 'index.html',
       },
       output: {
-        entryFileNames: "[name].js",
-        chunkFileNames: "[name].js",
-        assetFileNames: "[name].[ext]",
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name].[ext]',
       },
     },
   },
+  // Make environment variables available in your app
   define: {
-    // LiveKit server URL - WebSocket URL for LiveKit connection
-    "process.env.LIVEKIT_URL": JSON.stringify("wss://demo.livekit.cloud"),
-
-    // Room name for the grocery assistant
-    "process.env.LIVEKIT_ROOM_NAME": JSON.stringify("grocery-assistant"),
+    'process.env.VITE_LIVEKIT_URL': JSON.stringify(
+      process.env.VITE_LIVEKIT_URL
+    ),
+    'process.env.VITE_BACKEND_API_URL': JSON.stringify(
+      process.env.VITE_BACKEND_API_URL
+    ),
+    'process.env.VITE_LIVEKIT_API_KEY': JSON.stringify(
+      process.env.VITE_LIVEKIT_API_KEY
+    ),
+    'process.env.VITE_LIVEKIT_API_SECRET': JSON.stringify(
+      process.env.VITE_LIVEKIT_API_SECRET
+    ),
   },
-});
+})
