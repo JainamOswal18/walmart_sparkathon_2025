@@ -19,11 +19,10 @@ export default defineConfig({
     },
   },
   define: {
-    "process.env.VITE_LIVEKIT_URL": JSON.stringify(
-      process.env.LIVEKIT_API_URL || "wss://demo.livekit.cloud"
-    ),
-    "process.env.VITE_LIVEKIT_API_URL": JSON.stringify(
-      process.env.LIVEKIT_API_URL || "https://your-api-server.com"
-    ),
+    // LiveKit server URL - WebSocket URL for LiveKit connection
+    "process.env.LIVEKIT_URL": JSON.stringify("wss://demo.livekit.cloud"),
+
+    // Room name for the grocery assistant
+    "process.env.LIVEKIT_ROOM_NAME": JSON.stringify("grocery-assistant"),
   },
 });

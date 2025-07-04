@@ -1,112 +1,155 @@
-# Smart Grocery Assistant Chrome Extension (MVP)
+# Smart Grocery Assistant
+
+A voice-controlled browser extension that helps users with online grocery shopping using LiveKit for real-time communication and AI-powered assistance.
 
 ## Overview
 
-**Smart Grocery Assistant** is a Chrome extension that enables users to control online grocery shopping websites (like Walmart and Instacart) using voice commands. This MVP demonstrates the core workflow: voice input, AI service interaction (placeholder), and basic DOM manipulation on supported grocery sites.
+This project consists of two main components:
 
----
+1. **Chrome Extension (React)**: A browser extension that provides a voice interface for users to interact with online grocery shopping websites.
+2. **Server (Python)**: A LiveKit Agents-powered backend that processes voice commands and provides AI assistance.
 
 ## Features
 
-- **Automatic Activation:**
-  - Content script is injected automatically on Walmart and Instacart domains.
-- **Voice Input:**
-  - Modern popup with a button to start/stop listening for voice commands.
-  - Uses the user's microphone to record audio.
-- **AI Service Integration (Placeholder):**
-  - Sends recorded audio to a placeholder AI service endpoint.
-  - Expects a JSON response with a `command`, `parameters`, and an `audio_response_url`.
-- **Website DOM Interaction:**
-  - Executes basic actions (e.g., search, add to cart) using placeholder selectors.
-- **Voice Output:**
-  - Plays back the assistant's audio reply from a provided URL.
-- **Futuristic UI/UX:**
-  - Popup features a dark glassmorphism card, neon purple and blue accents, soft glow effects, and smooth state animations for a high-tech, professional look.
+- Voice-controlled grocery shopping assistant
+- Real-time communication using LiveKit
+- AI-powered assistance using Google Gemini
+- Search for products, add items to cart, and answer questions
+- Works with popular grocery websites like Walmart and Instacart
 
----
+## Prerequisites
 
-## Modern Popup UI/UX Design
+- Node.js 16+ for the extension
+- Python 3.9+ for the server
+- LiveKit account (Cloud or self-hosted)
+- Google Gemini API key (or other supported AI provider)
 
-- **Color Palette:**
-  - Dark gradient background (`#0D0D19` to `#121223`)
-  - Neon purple (`#7E3CFB`) and soft blue (`#5C73E6`) accents
-  - Light gray/white text (`#E0E0E0`)
-  - Glassmorphism card with blur and transparency
-- **Design Features:**
-  - Neon glow and animated button for voice input
-  - Animated status text for listening, processing, and error states
-  - Minimalist, readable layout with generous spacing
-  - Subtle transitions and hover effects for all interactive elements
-- **Implementation:**
-  - All popup UI styles are in `extension/popup.css`.
-  - State changes (listening, processing, error, idle) are reflected visually via CSS classes managed in `extension/popup.js`.
+## Setup
 
----
+### Environment Variables
 
-## File Structure
+Create a `.env` file in the server directory with the following variables:
 
 ```
-extension/
-  ├── manifest.json         # Chrome extension manifest (Manifest V3)
-  ├── popup.html            # Popup UI (modern, glassmorphism design)
-  ├── popup.js              # Handles popup logic, state, and messaging
-  ├── popup.css             # All popup UI/UX styles (futuristic, animated)
-  ├── background.js         # Handles API calls to the AI service
-  ├── content.js            # Injected into grocery sites, handles voice, AI, and DOM actions
-  ├── icon16.png            # Extension icon (16x16)
-  ├── icon48.png            # Extension icon (48x48)
-  ├── icon128.png           # Extension icon (128x128)
-README.md                   # This documentation
+LIVEKIT_API_KEY=your_livekit_api_key
+LIVEKIT_API_SECRET=your_livekit_api_secret
+LIVEKIT_URL=your_livekit_url
+GOOGLE_API_KEY=your_google_api_key
 ```
 
----
+### Server Setup
 
-## Setup & Installation
+1. Navigate to the server directory:
 
-1. **Clone or Download the Repository**
-   - Place all files in a single directory, preserving the `extension/` folder structure.
+```bash
+cd server
+```
 
-2. **(Optional) Add/Replace Icons**
-   - For best results, use your own `icon16.png`, `icon48.png`, and `icon128.png` in the `extension/` directory. These are referenced in `manifest.json`.
+2. Create a virtual environment and activate it:
 
-3. **Load the Extension in Chrome**
-   1. Open Chrome and go to `chrome://extensions/`.
-   2. Enable **Developer mode** (toggle in the top right).
-   3. Click **Load unpacked** and select the `extension/` directory.
-   4. The "Smart Grocery Assistant" extension should now appear in your extensions list.
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-4. **Usage**
-   - Navigate to [walmart.com](https://www.walmart.com) or [instacart.com](https://www.instacart.com).
-   - Click the extension icon and use the popup to start/stop voice listening.
-   - The extension will record your voice, send it to the placeholder AI service, and attempt to perform actions on the page based on the AI's response.
-   - The popup UI will visually indicate listening, processing, and error states with animated effects.
+3. Install dependencies:
 
----
+```bash
+pip install -r requirements.txt
+```
 
-## Notes & Customization
+4. Start the token API:
 
-- **AI Service Endpoint:**
-  - The extension uses a placeholder endpoint (`https://your-ai-service.com/process_audio`). Replace this with your actual AI service URL in `background.js`.
-- **DOM Selectors:**
-  - The content script uses placeholder selectors (e.g., `#search-input`, `.add-to-cart-button`). Update these to match the actual structure of your target grocery sites for full functionality.
-- **Permissions:**
-  - The extension requests microphone access and host permissions for Walmart and Instacart domains.
-- **No Real AI Logic:**
-  - This MVP only demonstrates the communication flow. The AI service must be implemented separately.
-- **No Advanced Error Handling:**
-  - The code is intentionally simple for MVP purposes.
-- **UI/UX Customization:**
-  - All popup UI styles are in `popup.css`. You can further customize colors, animations, and layout there.
+```bash
+python token_api.py
+```
 
----
+5. In a separate terminal, start the agent:
 
-## Further Improvements
-- Add more robust UI/UX for voice interaction.
-- Support more grocery sites and commands.
-- Implement real AI service and authentication.
-- Improve DOM selector logic for reliability.
+```bash
+python agents.py
+```
 
----
+### Extension Setup
+
+1. Navigate to the extension directory:
+
+```bash
+cd extension
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file with the following variables:
+
+```
+LIVEKIT_URL=your_livekit_url
+LIVEKIT_API_URL=http://localhost:5000
+LIVEKIT_ROOM_NAME=grocery-assistant
+```
+
+4. Build the extension:
+
+```bash
+npm run build
+```
+
+5. Load the extension in Chrome:
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the `dist` directory
+
+## Usage
+
+1. Navigate to a supported grocery website (e.g., Walmart, Instacart)
+2. Click on the extension icon to open the popup
+3. Click the "Start Listening" button to activate the voice assistant
+4. Speak your commands or questions, such as:
+   - "Search for milk"
+   - "Add bananas to my cart"
+   - "How much is this product?"
+   - "Find organic vegetables"
+
+## Architecture
+
+### Extension Components
+
+- **App.jsx**: Main extension popup interface
+- **VoiceAssistant**: Component for voice interaction using LiveKit
+- **LiveKitService.js**: Manages LiveKit room connections
+- **TokenService.js**: Handles authentication with LiveKit
+
+### Server Components
+
+- **token_api.py**: API for generating LiveKit tokens
+- **agents.py**: LiveKit Agents implementation with Google Gemini
+- **prompts.py**: Instructions and prompts for the AI assistant
+
+## Integration with LiveKit
+
+This project uses LiveKit for real-time communication between the extension and the server:
+
+1. The extension connects to a LiveKit room using the token from the API
+2. The server runs a LiveKit Agent that joins the same room
+3. Audio is streamed in real-time between the extension and server
+4. The agent processes the audio, performs AI operations, and responds
+
+## Troubleshooting
+
+- **Token Generation Issues**: Ensure your LiveKit API key and secret are correct
+- **Connection Problems**: Check that your LiveKit URL is accessible
+- **Microphone Access**: Make sure to grant microphone permissions to the extension
+- **AI Responses**: Verify your Google API key is valid and has access to Gemini models
 
 ## License
-MIT
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [LiveKit](https://livekit.io/) for real-time communication
+- [Google Gemini](https://ai.google.dev/) for AI capabilities
