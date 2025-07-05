@@ -1,27 +1,35 @@
-// background.js - Handles API calls to the AI service
+// background.js - Service worker for the Smart Grocery Assistant extension
 
-const AI_SERVICE_ENDPOINT = "https://your-ai-service.com/process_audio"; // Placeholder
+// Listen for installation events
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    console.log('Smart Grocery Assistant installed');
+  } else if (details.reason === 'update') {
+    console.log('Smart Grocery Assistant updated');
+  }
+});
 
+// Handle messages from content scripts or popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "PROCESS_AUDIO") {
-    // message.audioData: ArrayBuffer or Blob
-    // Send audio data to AI service
-    fetch(AI_SERVICE_ENDPOINT, {
-      method: "POST",
-      body: message.audioData,
-      headers: {
-        // Set appropriate headers if needed
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // data: { command, parameters, audio_response_url }
-        sendResponse({ success: true, data });
-      })
-      .catch((error) => {
-        sendResponse({ success: false, error: error.toString() });
-      });
-    // Indicate async response
-    return true;
+  // Keep the service worker alive for async operations
+  if (message.keepAlive) {
+    sendResponse({ status: 'alive' });
+    return;
+  }
+  
+  // Forward messages from content script to popup or vice versa
+  if (message.target === 'popup') {
+    chrome.runtime.sendMessage(message).catch(err => {
+      console.log('Error forwarding message to popup:', err);
+    });
+  } else if (message.target === 'content') {
+    // Forward to active tab
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, message).catch(err => {
+          console.log('Error forwarding message to content script:', err);
+        });
+      }
+    });
   }
 }); 

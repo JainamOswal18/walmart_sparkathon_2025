@@ -11,6 +11,7 @@ class LiveKitService {
     this.isConnecting = false;
     this.statusCallbacks = [];
     this.LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || DEFAULT_LIVEKIT_URL;
+    this.microphoneStream = null;
   }
 
   // Initialize the room with options
@@ -27,9 +28,22 @@ class LiveKitService {
     this.room
       .on(RoomEvent.Connected, this.handleConnected.bind(this))
       .on(RoomEvent.Disconnected, this.handleDisconnected.bind(this))
-      .on(RoomEvent.AudioPlaybackStatusChanged, this.handleAudioPlaybackStatusChanged.bind(this));
+      .on(RoomEvent.AudioPlaybackStatusChanged, this.handleAudioPlaybackStatusChanged.bind(this))
+      .on(RoomEvent.MediaDevicesError, this.handleMediaDevicesError.bind(this));
 
     return this.room;
+  }
+
+  // Request microphone permissions explicitly
+  async requestMicrophonePermission() {
+    try {
+      this.microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      return true;
+    } catch (error) {
+      console.error('Microphone permission error:', error);
+      this.updateStatus('permission-error', error);
+      throw error;
+    }
   }
 
   // Connect to a LiveKit room
@@ -40,6 +54,11 @@ class LiveKitService {
     this.updateStatus('connecting');
     
     try {
+      // Ensure we have microphone permissions
+      if (!this.microphoneStream) {
+        await this.requestMicrophonePermission();
+      }
+      
       const room = this.initRoom();
       
       // Pre-warm connection for faster connect time
@@ -72,8 +91,14 @@ class LiveKitService {
     try {
       await this.room.disconnect();
       this.isConnected = false;
-      this.updateStatus('disconnected');
-      console.log('Disconnected from LiveKit room');
+      this.updateStatus("disconnected");
+      console.log("Disconnected from LiveKit room");
+
+      // Release microphone stream if it exists
+      if (this.microphoneStream) {
+        this.microphoneStream.getTracks().forEach((track) => track.stop());
+        this.microphoneStream = null;
+      }
     } catch (error) {
       console.error('Error disconnecting from LiveKit room:', error);
       throw error;
@@ -97,6 +122,12 @@ class LiveKitService {
     if (this.room && !this.room.canPlaybackAudio) {
       this.updateStatus('audio-blocked');
     }
+  }
+
+  // Handle media device errors
+  handleMediaDevicesError(error) {
+    console.error('Media devices error:', error);
+    this.updateStatus('media-error', error);
   }
 
   // Start audio playback (must be called from user interaction)

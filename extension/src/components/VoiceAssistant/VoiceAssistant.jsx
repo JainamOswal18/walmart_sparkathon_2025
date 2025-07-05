@@ -81,6 +81,15 @@ const VoiceAssistant = () => {
     setError(null);
     
     try {
+      // First explicitly request microphone permission
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // Keep the stream active to maintain permission
+      const audioTracks = stream.getAudioTracks();
+      if (audioTracks.length > 0) {
+        console.log('Microphone permission granted');
+      }
+      
       // Get token from backend
       const newToken = await TokenService.getToken(username);
       setToken(newToken);
@@ -89,7 +98,10 @@ const VoiceAssistant = () => {
       // Connect to LiveKit
       await LiveKitService.connect(newToken);
     } catch (err) {
-      setError(err.message || 'Failed to connect');
+      console.error('Connection error:', err);
+      setError(err.name === 'NotAllowedError' 
+        ? 'Microphone permission denied. Please allow microphone access and try again.' 
+        : err.message || 'Failed to connect');
       setConnecting(false);
     }
   }, [username]);
@@ -116,6 +128,25 @@ const VoiceAssistant = () => {
       {showForm ? (
         <div className="connect-form">
           <h2>Smart Grocery Assistant</h2>
+          <p className="assistant-description">
+            Your voice-enabled shopping assistant that helps you find products, compare prices, and more!
+          </p>
+          {error && (
+            <div className="error-container">
+              <p className="error-message">{error}</p>
+              {error.includes('microphone') && (
+                <div className="permission-help">
+                  <p>To fix this:</p>
+                  <ol>
+                    <li>Click the lock/site settings icon in your address bar</li>
+                    <li>Find "Microphone" in the permissions list</li>
+                    <li>Change the setting to "Allow"</li>
+                    <li>Refresh this extension and try again</li>
+                  </ol>
+                </div>
+              )}
+            </div>
+          )}
           <form onSubmit={handleConnect}>
             <input
               type="text"
@@ -127,7 +158,6 @@ const VoiceAssistant = () => {
             <button type="submit" disabled={connecting}>
               {connecting ? 'Connecting...' : 'Connect to Assistant'}
             </button>
-            {error && <p className="error-message">{error}</p>}
           </form>
         </div>
       ) : token ? (
@@ -162,9 +192,6 @@ const VoiceAssistantView = ({ onStartAudio, onDisconnect }) => {
     <div className="assistant-connected">
       <div className="assistant-header">
         <h3>Smart Grocery Assistant</h3>
-        <button className="disconnect-btn" onClick={onDisconnect}>
-          Disconnect
-        </button>
       </div>
       
       <div className="visualizer-container">
