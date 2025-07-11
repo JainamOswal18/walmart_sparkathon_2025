@@ -1,128 +1,81 @@
+/* Add your styles for the VoiceAssistant component here */
+
 .voice-assistant-container {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Connection form styles */
 .connect-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  width: 100%;
-  height: 100%;
+  text-align: center;
 }
 
 .connect-form h2 {
+  color: #4285f4;
   margin-bottom: 10px;
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--text-color);
 }
 
 .assistant-description {
-  text-align: center;
+  color: #5f6368;
   margin-bottom: 20px;
-  font-size: 0.9rem;
-  color: var(--text-color);
-  opacity: 0.8;
-  max-width: 90%;
-}
-.connect-form form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 15px;
 }
 
 .connect-form input {
-  padding: 12px 15px;
-    border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  }
-  
-  .connect-form input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .connect-form button {
-  padding: 12px 15px;
-    border-radius: 8px;
-  border: none;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  width: 100%;
+  padding: 12px;
+  background-color: #4285f4;
   color: white;
-  font-size: 1rem;
-  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .connect-form button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background-color: #3367d6;
 }
 
 .connect-form button:disabled {
-  opacity: 0.7;
+  background-color: #a1a1a1;
   cursor: not-allowed;
-  transform: none;
 }
 
 .error-container {
-  background: rgba(255, 87, 87, 0.1);
-  border: 1px solid rgba(255, 87, 87, 0.3);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 15px;
-  width: 100%;
-}
-.error-message {
-  color: var(--error-color);
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-    text-align: center;
-  }
-  
-  .permission-help {
-    font-size: 0.85rem;
-    color: var(--text-color);
-    opacity: 0.9;
-  margin-top: 10px;
+  margin: 15px 0;
+  padding: 10px;
+  background-color: #fdeded;
+  border-radius: 4px;
 }
 
-.permission-help p {
-  margin-bottom: 5px;
-  font-weight: 500;
+.error-message {
+  color: #d32f2f;
+  margin: 0;
+}
+
+.permission-help {
+  margin-top: 10px;
+  text-align: left;
 }
 
 .permission-help ol {
   padding-left: 20px;
-  margin: 0;
 }
 
-.permission-help li {
-  margin-bottom: 3px;
-}
-/* Connected assistant styles */
 .assistant-connected {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   width: 100%;
 }
 
@@ -130,97 +83,69 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
 }
 
 .assistant-header h3 {
+  color: #4285f4;
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: 500;
 }
 
-.disconnect-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  padding: 5px 10px;
-  color: var(--text-color);
+.web-automation-toggle {
+  background-color: #fbbc04;
+  color: #202124;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
+  transition: background-color 0.3s;
 }
 
-.disconnect-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+.web-automation-toggle:hover {
+  background-color: #f9ab00;
 }
 
-/* Visualizer container */
 .visualizer-container {
-  height: 80px;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* Control section */
-.control-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  height: 60px;
+  margin-bottom: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Conversation */
+.control-section {
+  margin-top: 15px;
+}
+
 .conversation {
-  flex: 1;
-  padding: 10px 15px;
+  margin-top: 20px;
+  max-height: 300px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .no-messages {
+  color: #5f6368;
   text-align: center;
-  color: rgba(255, 255, 255, 0.5);
   font-style: italic;
-  margin: 20px 0;
 }
 
 .message {
-  padding: 10px;
+  margin-bottom: 10px;
+  padding: 8px;
   border-radius: 8px;
-  max-width: 90%;
-  word-wrap: break-word;
-}
-
-.message-user {
-  align-self: flex-end;
-  background: rgba(33, 150, 243, 0.2);
-  border: 1px solid rgba(33, 150, 243, 0.3);
 }
 
 .message-agent {
-  align-self: flex-start;
-  background: rgba(106, 17, 203, 0.2);
-  border: 1px solid rgba(106, 17, 203, 0.3);
+  background-color: #e8f0fe;
 }
 
-.message strong {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.message-user strong {
-  color: rgba(33, 150, 243, 0.9);
-}
-
-.message-agent strong {
-  color: rgba(106, 17, 203, 0.9);
+.message-user {
+  background-color: #f1f3f4;
 } 

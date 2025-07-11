@@ -16,12 +16,24 @@ else
     source venv/bin/activate
 fi
 
-# Function to start the token server
-start_token_server() {
-    echo "Starting token server..."
-    python token_server.py &
-    TOKEN_SERVER_PID=$!
-    echo "Token server started with PID: $TOKEN_SERVER_PID"
+# Check for required environment variables
+if [ -z "$LIVEKIT_API_KEY" ] || [ -z "$LIVEKIT_API_SECRET" ]; then
+    echo "Error: LIVEKIT_API_KEY and LIVEKIT_API_SECRET environment variables must be set."
+    echo "Please create a .env file in the server directory with these variables."
+    exit 1
+fi
+
+if [ -z "$GOOGLE_API_KEY" ]; then
+    echo "Warning: GOOGLE_API_KEY environment variable is not set."
+    echo "Web automation features may not work properly."
+fi
+
+# Function to start the FastAPI server
+start_api_server() {
+    echo "Starting API server..."
+    python main.py &
+    API_SERVER_PID=$!
+    echo "API server started with PID: $API_SERVER_PID"
 }
 
 # Function to start the agent
@@ -35,9 +47,9 @@ start_agent() {
 # Handle Ctrl+C to clean up processes
 cleanup() {
     echo "Stopping services..."
-    if [ ! -z "$TOKEN_SERVER_PID" ]; then
-        kill $TOKEN_SERVER_PID
-        echo "Token server stopped"
+    if [ ! -z "$API_SERVER_PID" ]; then
+        kill $API_SERVER_PID
+        echo "API server stopped"
     fi
     if [ ! -z "$AGENT_PID" ]; then
         kill $AGENT_PID
@@ -49,7 +61,7 @@ cleanup() {
 trap cleanup SIGINT
 
 # Start services
-start_token_server
+start_api_server
 start_agent
 
 echo "All services are running. Press Ctrl+C to stop."

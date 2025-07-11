@@ -1,7 +1,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
@@ -72,8 +72,8 @@ body {
 }
 
 .popup-card {
-  width: 350px;
-  height: 500px;
+  width: 400px;
+  height: 550px;
   background-color: var(--card-background);
   color: var(--text-color);
   border-radius: 12px;
@@ -81,6 +81,57 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* App tabs styling */
+.app-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  opacity: 0.9;
+}
+
+.tab-button.active {
+  opacity: 1;
+  border-bottom: 2px solid var(--primary-color);
+  background-color: rgba(106, 17, 203, 0.1);
+}
+
+/* Web automation tab styling */
+.web-automation-tab {
+  padding: 15px;
+  overflow-y: auto;
+  height: calc(100% - 45px);
+}
+
+.web-automation-tab h2 {
+  color: var(--primary-color);
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+
+.web-automation-tab p {
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 
 /* Scrollbar styling */

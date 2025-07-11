@@ -1,3 +1,8 @@
+"""
+DEPRECATED: This file is no longer used. The token server functionality has been integrated into main.py.
+This file is kept for reference purposes only.
+"""
+
 import os
 import uuid
 from dotenv import load_dotenv
@@ -76,6 +81,7 @@ def root():
     """
 
 if __name__ == "__main__":
+    print("WARNING: This token server is deprecated. Please use main.py instead.")
     # Get port from environment or default to 5001
     port = int(os.getenv("PORT", 5001))
     print(f"Starting token server on port {port}")
