@@ -2,9 +2,9 @@ livekit-agents
 livekit-plugins-google
 livekit-plugins-silero 
 python-dotenv
- 
+
 livekit-api
+flask[async]
+flask
+flask-cors
 uvicorn
-fastapi
-pydantic
-google-generativeai

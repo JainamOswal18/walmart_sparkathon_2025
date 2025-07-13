@@ -4,7 +4,6 @@ import { Track } from 'livekit-client';
 import '@livekit/components-styles';
 import LiveKitService from '../../services/LiveKitService';
 import TokenService from '../../services/TokenService';
-import WebAutomation from '../WebAutomation/WebAutomation';
 import './VoiceAssistant.css';
 
 // Message component to display transcribed messages
@@ -51,7 +50,6 @@ const VoiceAssistant = () => {
   const [error, setError] = useState(null);
   const [username, setUsername] = useState('');
   const [showForm, setShowForm] = useState(true);
-  const [showWebAutomation, setShowWebAutomation] = useState(false);
 
   // Handle LiveKit status changes
   useEffect(() => {
@@ -124,17 +122,6 @@ const VoiceAssistant = () => {
     LiveKitService.startAudio();
   }, []);
 
-  // Toggle web automation panel
-  const toggleWebAutomation = useCallback(() => {
-    setShowWebAutomation(prev => !prev);
-  }, []);
-
-  // Handle web automation task completion
-  const handleTaskComplete = useCallback((result) => {
-    console.log('Web automation task completed:', result);
-    // You can add additional handling here if needed
-  }, []);
-
   // Render main component
   return (
     <div className="voice-assistant-container">
@@ -183,13 +170,7 @@ const VoiceAssistant = () => {
           onDisconnected={handleDisconnect}
         >
           <RoomAudioRenderer />
-          <VoiceAssistantView 
-            onStartAudio={handleStartAudio} 
-            onDisconnect={handleDisconnect}
-            onToggleWebAutomation={toggleWebAutomation}
-            showWebAutomation={showWebAutomation}
-            onTaskComplete={handleTaskComplete}
-          />
+          <VoiceAssistantView onStartAudio={handleStartAudio} onDisconnect={handleDisconnect} />
         </LiveKitRoom>
       ) : null}
     </div>
@@ -197,13 +178,7 @@ const VoiceAssistant = () => {
 };
 
 // The inner view component when connected to LiveKit
-const VoiceAssistantView = ({ 
-  onStartAudio, 
-  onDisconnect, 
-  onToggleWebAutomation, 
-  showWebAutomation,
-  onTaskComplete
-}) => {
+const VoiceAssistantView = ({ onStartAudio, onDisconnect }) => {
   const { state, audioTrack, agentTranscriptions } = useVoiceAssistant();
   const localParticipant = useLocalParticipant();
   const { segments: userTranscriptions } = useTrackTranscription({
@@ -217,17 +192,7 @@ const VoiceAssistantView = ({
     <div className="assistant-connected">
       <div className="assistant-header">
         <h3>Smart Grocery Assistant</h3>
-        <button 
-          className="web-automation-toggle"
-          onClick={onToggleWebAutomation}
-        >
-          {showWebAutomation ? 'Hide Web Tools' : 'Show Web Tools'}
-        </button>
       </div>
-      
-      {showWebAutomation && (
-        <WebAutomation onTaskComplete={onTaskComplete} />
-      )}
       
       <div className="visualizer-container">
         <BarVisualizer state={state} barCount={7} trackRef={audioTrack} />
