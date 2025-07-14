@@ -2,9 +2,11 @@ livekit-agents
 livekit-plugins-google
 livekit-plugins-silero 
 python-dotenv
-
 livekit-api
 flask[async]
 flask
 flask-cors
+langchain
+langchain-community
+langchain-google-genai
 uvicorn
