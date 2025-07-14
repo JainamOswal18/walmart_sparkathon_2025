@@ -1,0 +1,56 @@
+Q: How do I add an item to my cart by voice?
+A: Click the microphone icon, say “Add item,” .
+
+Q: How can I remove something from my cart?
+A: Tap the mic, say “Remove item from my cart,” confirm with “Yes, remove it,” and it will be taken out.
+
+Q: How do I change the quantity of an item I already added?
+A: Say “Change quantity of item to the specific amount,” confirm when asked, and the cart will update automatically.
+
+Q: What if I accidentally add the wrong product?
+A: Say “That’s not what I wanted” or “Undo last action”.
+
+Q: Can I search for products by category or name?
+A: Yes—say “Search for item-name” or “Show item-category,” and the assistant will filter your view on the site.
+
+Q: How do I switch between different grocery websites?
+A: Navigate to the new site URL; the extension detects it and activates the assistant automatically—no extra clicks needed.
+
+Q: Why isn’t the mic button lighting up?
+A: Make sure you’ve granted microphone permission in your browser settings and that you’re on a supported grocery site.
+
+Q: How do I see what’s currently in my cart?
+A: Say “Show my cart,” and the assistant will display a list of items and quantities on-screen.
+
+Q: How do I clear my entire cart?
+A: Simply say “Clear my cart” or “Empty cart,” confirm the prompt, and all items will be removed.
+
+Q: What if the assistant mishears my command?
+A: After it repeats its understanding, say “No, that’s wrong,” and then repeat your command more slowly.
+
+Q: Can I set reminders for items I buy regularly?
+A: Yes—just ask the assistant to "set reminder" for those items and all set.
+
+Q: How does it remember my past purchases?
+A: It logs actions locally in your browser so it can learn patterns—nothing leaves your device.
+
+Q: What happens if the website layout changes and “Add to Cart” breaks?
+A: The assistant will attempt a smart fallback. If it still fails, say “Report an issue,” and we’ll update the site profile.
+
+Q: Can I filter by price or brand?
+A: Yes—say “Filter by price under 500 rupees” or “Show only store-brand items,” and it applies the site’s filters.
+
+Q: Does this work on mobile browsers?
+A: Currently it’s optimized for desktop Chrome/Edge extensions. Mobile support is coming soon.
+
+Q: How do I update or remove a reminder?
+A: Say “List my reminders,” then “Disable reminder for items,” or go to Settings → Reminders to adjust them.
+
+Q: Is my cart data synced across devices?
+A: Not yet—your data lives in your current browser. We plan cross-device sync in a future update.
+
+Q: How do I get help or view a tutorial?
+A: Say “Help me” or “Show tutorial,” and you’ll get a step-by-step voice guide on using all features.
+
+Q: How can I give feedback or report bugs?
+A: Say “Give feedback,” and you’ll receive a link to our feedback form—your input helps us improve!

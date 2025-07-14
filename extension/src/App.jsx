@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import VoiceAssistant from './components/VoiceAssistant/VoiceAssistant'
-import './App.css'
+// import './App.css'
 
 function App() {
   return (

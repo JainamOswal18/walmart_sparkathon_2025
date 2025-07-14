@@ -5,11 +5,14 @@ from livekit.agents import (
     JobContext,
     WorkerOptions,
     cli,
-    llm
+    llm,
+    function_tool,
+    RunContext
 )
 from livekit.plugins import google
 from dotenv import load_dotenv
 from prompts import WELCOME_MESSAGE, INSTRUCTIONS
+import rag
 import os
 
 load_dotenv()
@@ -17,6 +20,21 @@ load_dotenv()
 class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(instructions=INSTRUCTIONS)
+    
+    @function_tool(
+        name="faq_lookup",
+        description=(
+            "Use this when the user asks a question about how the grocery assistant works. "
+            "Input is the question string; output should be the grounded answer."
+        ),
+    )
+    async def faq_lookup(
+        self, context: RunContext, question: str
+    ) -> dict[str, str]:
+        """Return the best answer from the FAQ RAG chain."""
+        answer = await context.loop.run_in_executor(None, rag.answer, question)
+        return {"answer": answer}    
+        
     
     # Add your functions here with @function_tool decorator when needed
     # Example:
